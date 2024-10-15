@@ -8,9 +8,14 @@ app.use(express.json());
 initializeDatabase();
 
 const cors = require("cors");
+const corsOption = {
+  origin: "*",
+  credentials: true,
+  optionSuccessStatus: 200,
+}
 app.use(cors());
 
-// Add new book to dabase.
+// Add new book to database.
 async function addBookData(newBook) {
   try {
     const newBookToAdd = new Books(newBook);
@@ -245,3 +250,5 @@ const PORT = 3000;
 app.listen(PORT, () => {
   console.log("Server is running on port:-", PORT);
 });
+
+module.exports = app; 
