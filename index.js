@@ -12,7 +12,7 @@ const corsOption = {
   origin: "*",
   credentials: true,
   optionSuccessStatus: 200,
-}
+};
 app.use(cors());
 
 // Add new book to database.
@@ -239,7 +239,9 @@ async function booksByReleaseYear(bookId) {
 app.delete("/books/:bookId", async (req, res) => {
   try {
     const deletedBook = await booksByReleaseYear(req.params.bookId);
-    res.status(200).json({ message: "Book deleted successfully." });
+    res
+      .status(200)
+      .json({ message: "Book deleted successfully.", book: deletedBook });
   } catch {
     res.status(500).json({ error: "Error in connecting to database." });
   }
@@ -251,4 +253,4 @@ app.listen(PORT, () => {
   console.log("Server is running on port:-", PORT);
 });
 
-module.exports = app; 
+module.exports = app;
