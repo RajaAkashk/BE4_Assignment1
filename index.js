@@ -210,7 +210,7 @@ async function updateBookById(bookId, updateData) {
 }
 
 // Route to handle updating a book by ID
-app.post("/books/:bookId", async (req, res) => {
+app.put("/books/:bookId", async (req, res) => {
   try {
     const { bookId } = req.params;
     const updateData = req.body;
