@@ -194,35 +194,44 @@ app.post("/books/:bookId", async (req, res) => {
   }
 });
 
-// Read book and update rating by title
-async function booksByRating(bookTitle, bookRating) {
+// Function to update book by ID
+async function updateBookById(bookId, updateData) {
   try {
-    const updatedBook = await Books.findOneAndUpdate({
-      title: bookTitle,
-      rating: bookRating.rating,
-    });
+    const updatedBook = await Books.findByIdAndUpdate(
+      bookId, // Find by ID
+      updateData, // Update with data from req.body
+      { new: true } // Return the updated document
+    );
     return updatedBook;
   } catch (error) {
-    console.log("Error in reading book by title.", error);
+    console.error("Error in updating book by ID:", error);
+    throw error;
   }
 }
 
-app.post("/books/title/:bookTitle", async (req, res) => {
+// Route to handle updating a book by ID
+app.post("/books/:bookId", async (req, res) => {
   try {
-    const updatedBook = await booksByRating(
-      req.params.bookTitle,
-      req.body.rating
-    );
+    const { bookId } = req.params;
+    const updateData = req.body;
+
+    if (!bookId) {
+      return res.status(400).json({ error: "Book ID is required." });
+    }
+
+    const updatedBook = await updateBookById(bookId, updateData);
+
     if (updatedBook) {
-      res
-        .status(200)
-        .json({ message: "Successfully found book.", Book: updatedBook });
+      res.status(200).json({
+        message: "Successfully updated the book.",
+        book: updatedBook,
+      });
     } else {
-      res.status(404).json({ error: "Error in finding book in database." });
+      res.status(404).json({ error: "Book not found in the database." });
     }
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Error in connecting to database." });
+    console.error("Error in updating book:", error);
+    res.status(500).json({ error: "Internal server error." });
   }
 });
 
